@@ -1,0 +1,38 @@
+node_modules/
+
+# Terraform state files
+*.tfstate
+*.tfstate.backup
+
+# Terraform crash logs
+crash.log
+
+# Terraform plan output
+*.tfplan
+
+# Local .terraform directories (plugin data, modules, etc.)
+.terraform/
+
+# Sensitive variable definitions (if you store secrets locally)
+terraform.tfvars
+terraform.tfvars.json
+
+# Override files (not for sharing)
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+
+# MacOS-specific
+.DS_Store
+
+# Windows-specific
+Thumbs.db
+*.lnk
+*:Zone.Identifier
+
+# IDE-specific (optional, based on what you use)
+.vscode/
+.idea/
+*.swp
+*.swo
