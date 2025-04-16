@@ -1,9 +1,11 @@
-# # Configure the AWS provider for the entire project.
+# Configure the AWS provider for the entire project.
 # provider "aws" {
 #   region = var.aws_region
 # }
 
 
+
+# Or if using LocalStack, configure the provider and endpoints!
 provider "aws" {
   region                      = var.aws_region
   access_key                  = "test"   # Dummy values for LocalStack
