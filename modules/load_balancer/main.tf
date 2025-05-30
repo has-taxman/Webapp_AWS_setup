@@ -18,7 +18,7 @@ resource "aws_lb" "app_lb" {
 # Create a target group for the Node.js instances.
 resource "aws_lb_target_group" "app_tg" {
   name     = "multi-tier-tg"
-  port     = 3000
+  port     = 80
   protocol = "HTTP"
   vpc_id   = var.vpc_id
 

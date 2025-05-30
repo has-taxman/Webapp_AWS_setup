@@ -4,6 +4,7 @@
 variable "instance_type" {
   description = "EC2 instance type for the Node.js app"
   type        = string
+  default     = "t2.micro"
 }
 
 # Key name for SSH access

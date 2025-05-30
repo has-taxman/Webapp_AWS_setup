@@ -1,5 +1,5 @@
 #########################################################
-# Create Security Groups for ALB and EC2 Instances
+# Create Security Groups for ALB, EC2 Instances, and Bastion
 #########################################################
 
 # Security group for the Application Load Balancer.
@@ -43,13 +43,22 @@ resource "aws_security_group" "instance_sg" {
   description = "Security group for EC2 instances running Node.js"
   vpc_id      = var.vpc_id
 
-  # Allow traffic from the ALB on Node.js port (3000).
+  # Allow HTTP traffic from the ALB
   ingress {
-    from_port       = 3000
-    to_port         = 3000
+    from_port       = 80
+    to_port         = 80
     protocol        = "tcp"
     security_groups = [aws_security_group.alb_sg.id]
-    description     = "Allow traffic from ALB on Node.js port"
+    description     = "Allow HTTP from ALB"
+  }
+
+  # Allow SSH from the bastion SG
+  ingress {
+    from_port       = 22
+    to_port         = 22
+    protocol        = "tcp"
+    security_groups = [aws_security_group.bastion_sg.id]
+    description     = "Allow SSH from bastion host"
   }
 
   egress {
@@ -64,13 +73,29 @@ resource "aws_security_group" "instance_sg" {
   }
 }
 
-# Outputs to use the security group IDs in other modules.
-output "alb_sg_id" {
-  description = "ID of the ALB Security Group"
-  value       = aws_security_group.alb_sg.id
+# Bastion SG: allow SSH from your IP only
+resource "aws_security_group" "bastion_sg" {
+  name        = "bastion-sg"
+  description = "Allow SSH from my workstation to the bastion host"
+  vpc_id      = var.vpc_id
+
+  ingress {
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = [var.my_ip_cidr]
+    description = "SSH from my IP"
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  tags = {
+    Name = "MultiTier-Bastion-SG"
+  }
 }
 
-output "instance_sg_id" {
-  description = "ID of the instance Security Group"
-  value       = aws_security_group.instance_sg.id
-}

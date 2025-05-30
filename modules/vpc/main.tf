@@ -59,16 +59,65 @@ resource "aws_route_table" "public" {
   }
 }
 
-# Add a route for Internet access.
+# Add a route for Internet access in the public RT.
 resource "aws_route" "public_internet_access" {
   route_table_id         = aws_route_table.public.id
   destination_cidr_block = "0.0.0.0/0"
   gateway_id             = aws_internet_gateway.gw.id
 }
 
-# Associate the public subnets with the route table.
+# Associate each public subnet with the public route table.
 resource "aws_route_table_association" "public" {
   count          = length(aws_subnet.public)
   subnet_id      = aws_subnet.public[count.index].id
   route_table_id = aws_route_table.public.id
+}
+
+#########################################################
+# NAT Gateway & Private Subnet Routing (Option B)
+#########################################################
+
+# Allocate an Elastic IP for the NAT Gateway.
+resource "aws_eip" "nat" {
+  domain = "vpc" # replaced deprecated vpc = true
+
+  tags = {
+    Name = "MultiTier-NAT-EIP"
+  }
+}
+
+# Create the NAT Gateway in the first public subnet.
+resource "aws_nat_gateway" "nat" {
+  allocation_id = aws_eip.nat.id
+  subnet_id     = aws_subnet.public[0].id
+
+  tags = {
+    Name = "MultiTier-NAT-GW"
+  }
+
+  # Ensure the IGW is created before the NAT
+  depends_on = [aws_internet_gateway.gw]
+}
+
+# Create a route table for private subnets.
+resource "aws_route_table" "private" {
+  vpc_id = aws_vpc.main.id
+
+  tags = {
+    Name = "MultiTier-Private-RT"
+  }
+}
+
+# Add default route for private subnets to the NAT Gateway.
+resource "aws_route" "private_nat_gateway" {
+  route_table_id         = aws_route_table.private.id
+  destination_cidr_block = "0.0.0.0/0"
+  nat_gateway_id         = aws_nat_gateway.nat.id
+}
+
+# Associate each private subnet with the private route table.
+resource "aws_route_table_association" "private" {
+  count          = length(aws_subnet.private)
+  subnet_id      = aws_subnet.private[count.index].id
+  route_table_id = aws_route_table.private.id
 }

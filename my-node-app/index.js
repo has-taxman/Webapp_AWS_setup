@@ -12,3 +12,6 @@ app.listen(port, '0.0.0.0', () => {
 app.get('/', (req, res) => {
   res.send('Hello from Node.js on AWS!');
 });
+
+// (optional) add a /health endpoint:
+app.get('/health', (req, res) => res.sendStatus(200));

@@ -19,7 +19,7 @@ resource "aws_security_group" "rds_sg" {
   vpc_id      = var.vpc_id
 
   ingress {
-    from_port       = 3306  # Default MySQL port. Change if using PostgreSQL (5432) or adjust accordingly.
+    from_port       = 3306 # Default MySQL port. Change if using PostgreSQL (5432) or adjust accordingly.
     to_port         = 3306
     protocol        = "tcp"
     security_groups = [var.app_sg_id]
@@ -41,20 +41,20 @@ resource "aws_security_group" "rds_sg" {
 
 # Provision the RDS instance.
 resource "aws_db_instance" "this" {
-  identifier              = "multi-tier-db"
-  engine                  = var.db_engine
-  engine_version          = var.db_engine_version
-  instance_class          = var.db_instance_class
-  allocated_storage       = var.db_allocated_storage
-  db_name                 = var.db_name
-  username                = var.db_username
-  password                = var.db_password
-  db_subnet_group_name    = aws_db_subnet_group.this.name
-  vpc_security_group_ids  = [aws_security_group.rds_sg.id]
-  publicly_accessible     = false
-  multi_az                = false   # Set to true for production environments if required.
-  skip_final_snapshot     = true    # Change as needed for production environments.
-  deletion_protection     = false
+  identifier             = "multi-tier-db"
+  engine                 = var.db_engine
+  engine_version         = var.db_engine_version
+  instance_class         = var.db_instance_class
+  allocated_storage      = var.db_allocated_storage
+  db_name                = var.db_name
+  username               = var.db_username
+  password               = var.db_password
+  db_subnet_group_name   = aws_db_subnet_group.this.name
+  vpc_security_group_ids = [aws_security_group.rds_sg.id]
+  publicly_accessible    = false
+  multi_az               = false # Set to true for production environments if required.
+  skip_final_snapshot    = true  # Change as needed for production environments.
+  deletion_protection    = false
 
   tags = {
     Name = "MultiTier-RDS"

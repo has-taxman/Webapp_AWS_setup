@@ -9,3 +9,8 @@ output "db_endpoint" {
   description = "Endpoint of the RDS database"
   value       = module.database.db_endpoint
 }
+
+output "bastion_sg_id" {
+  description = "Security Group ID for bastion host"
+  value       = module.security_groups.bastion_sg_id
+}
