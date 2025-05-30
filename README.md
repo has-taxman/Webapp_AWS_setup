@@ -28,8 +28,8 @@ We’re talkin’ full-stack infra vibes here:
 > - An S3 bucket + DynamoDB table for remote state (you’ll need to set this up separately)
 
 ```bash
-git clone https://github.com/your-user/terraform-prod-webapp.git
-cd terraform-prod-webapp
+git clone https://github.com/has-taxman/Webapp_AWS_setup
+cd Webapp_AWS_setup
 
 # Initialize Terraform
 terraform init
